@@ -1,6 +1,11 @@
-+ [APP.py](#app.py)
++ [App.py](#app.py)
++ [config.py](#config.py)
++ [loader.py](#loader.py)
++ [callback_datas.py](#callback_datas.py)
++ [choice_buttons.py](#choice_buttons.py)
++ [purchase.py](#purchase.py)
 
-## APP.py
+## App.py
 
 Главный код для запуска всего дерева кода
 
@@ -223,10 +228,9 @@ if __name__ == '__main__':
             markup = types.InlineKeyboardMarkup()
             markup.add(types.InlineKeyboardButton("Дедлайны", url='https://disk.yandex.ru/i/fVDCYuRvCbJTiA'))
             await bot.send_message(message.chat.id, 'Домашка пока что только такая!', reply_markup=markup)
-            
-+ [oader.py](#oader.py)
+```
 
-## oader.py
+## loader.py
 
 Код объявления Dispatcher
 
@@ -237,3 +241,140 @@ import logging
 
 bot = Bot(token=config.BOT_TOKEN, parse_mode='HTML')
 dp = Dispatcher(bot)
+```
+## config.py
+
+Код импорта токена бота из .env
+
+```python
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+```
+
+
+## choice_buttons.py
+
+Объявление самих inline-кнопок и их CallBack
+
+```python
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+
+from keyboards.inline.callback_datas import buy_callback
+
+choice = InlineKeyboardMarkup(row_width=2)
+
+choice_linag = InlineKeyboardButton(text='Линейная алгебра', callback_data=buy_callback.new(item_name='linag'))
+choice.insert(choice_linag)
+choice_diskret = InlineKeyboardButton(text='Дискретная математика', callback_data=buy_callback.new(item_name='diskret'))
+choice.insert(choice_diskret)
+choice_matan = InlineKeyboardButton(text='Математический анализ', callback_data=buy_callback.new(item_name='matan'))
+choice.insert(choice_matan)
+choice_prog = InlineKeyboardButton(text='Программирование', callback_data=buy_callback.new(item_name='prog'))
+choice.insert(choice_prog)
+choice_dg = InlineKeyboardButton(text='Цифровая грамотность', callback_data=buy_callback.new(item_name='dg'))
+choice.insert(choice_dg)
+choice_logist = InlineKeyboardButton(text='Логистика', callback_data=buy_callback.new(item_name='logist'))
+choice.insert(choice_logist)
+choice_eco = InlineKeyboardButton(text='Экономика', callback_data=buy_callback.new(item_name='eco'))
+choice.insert(choice_eco)
+choice_eng = InlineKeyboardButton(text='Английский язык', callback_data=buy_callback.new(item_name='eng'))
+choice.insert(choice_eng)
+```
+
+## callback_datas.py
+
+Объявление callback общий кнопок
+
+```python
+from aiogram.utils.callback_data import CallbackData
+
+buy_callback = CallbackData("Buy", "item_name")
+
+```
+
+## purchase.py
+
+Реакция бота на callback и ответ в чат
+
+```python
+from aiogram.dispatcher.filters import Command
+from aiogram.types import Message, CallbackQuery, chat
+import aiogram
+from keyboards.inline.choice_buttons import choice
+from loader import dp, bot
+
+
+@dp.message_handler(Command("getemails"))
+async def show_emails(message: Message):
+    await message.answer(text="Выбери предмет", reply_markup=choice)
+
+
+@dp.callback_query_handler(text_contains='linag')
+async def choice_linag(call: CallbackQuery):
+    await call.answer(cache_time=30)
+    await call.message.answer("ФИО: Вагурина Ирина Вячеславовна\n"
+                              "email: ivagurina@hse.ru")
+
+
+@dp.callback_query_handler(text_contains='diskret')
+async def choice_diskret(call: CallbackQuery):
+    await call.answer(cache_time=30)
+    await call.message.answer("ФИО: Казакевич Виктория Григорьевна\n"
+                              "email: vkazakevich@hse.ru  vgkazakevich@etu.ru")
+
+
+@dp.callback_query_handler(text_contains='matan')
+async def choice_matan(call: CallbackQuery):
+    await call.answer(cache_time=30)
+    await call.message.answer("ФИО: Литвинова Виктория Викторовна\n"
+                              "email: vvlitvinova@hse.ru")
+
+
+@dp.callback_query_handler(text_contains='prog')
+async def choice_prog(call: CallbackQuery):
+    await call.answer(cache_time=30)
+    await call.message.answer("ФИО: Резник Сергей Александрович\n"
+                              "email: sreznik@hse.ru\n"
+                              "tg: @sreznick\n"
+                              "ФИО: Шагаев Дамир Тагирзянович\n"
+                              "email: dshagaev@hse.ru")
+
+
+@dp.callback_query_handler(text_contains='dg')
+async def choice_dg(call: CallbackQuery):
+    await call.answer(cache_time=30)
+    await call.message.answer("ФИО: Травин Александр Сергеевич\n"
+                              "email: atravin@hse.ru")
+
+
+@dp.callback_query_handler(text_contains='logist')
+async def choice_logist(call: CallbackQuery):
+    await call.answer(cache_time=30)
+    await call.message.answer("ФИО: Левченко Анна Владимировна\n"
+                              "email: a.levchenko@hse.ru")
+
+
+@dp.callback_query_handler(text_contains='log')
+async def choice_log(call: CallbackQuery):
+    await call.answer(cache_time=30)
+    await call.message.answer("ФИО: Левченко Анна Владимировна\n"
+                              "email: a.levchenko@hse.ru")
+
+
+@dp.callback_query_handler(text_contains='eco')
+async def choice_eco(call: CallbackQuery):
+    await call.answer(cache_time=30)
+    await call.message.answer("ФИО: Сторчевой Максим Анатольевич\n"
+                              "email: mstorchevoy@hse.ru")
+
+
+@dp.callback_query_handler(text_contains='eng')
+async def choice_eng(call: CallbackQuery):
+    await call.answer(cache_time=30)
+    await call.message.answer("ФИО: Солнцев Сергей Владимирович\n"
+                              "email: svsolntsev@hse.ru")
+
+```
