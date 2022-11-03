@@ -223,3 +223,17 @@ if __name__ == '__main__':
             markup = types.InlineKeyboardMarkup()
             markup.add(types.InlineKeyboardButton("Дедлайны", url='https://disk.yandex.ru/i/fVDCYuRvCbJTiA'))
             await bot.send_message(message.chat.id, 'Домашка пока что только такая!', reply_markup=markup)
+            
++ [oader.py](#oader.py)
+
+## oader.py
+
+Код объявления Dispatcher
+
+```python
+from aiogram import Bot, Dispatcher, types
+import config
+import logging
+
+bot = Bot(token=config.BOT_TOKEN, parse_mode='HTML')
+dp = Dispatcher(bot)
